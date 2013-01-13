@@ -7,20 +7,27 @@ function init(then) {
   var rFS = window.requestFileSystem
     || window.webkitRequestFileSystem;
 
-  rFS(window.PERSISTENT, 1024*1024, then);
+  var size = 1024*1024,
+      pers = window.PERSISTENT;
+
+  window.webkitStorageInfo.requestQuota(pers, size, function(grantedBytes) {
+    rFS(pers, size, then);
+  });
 }
 
 exports.readFile = function(fileName, callback) {
   init(function(fs) {
     fs.root.getFile(fileName, {},
-      function onSuccess(file) {
-        var reader = new FileReader();
+      function onSuccess(fileEntry) {
+        fileEntry.file(function(file) {
+          var reader = new FileReader();
 
-        reader.onloadend = function(e) {
-          callback(null, this.result);
-        };
+          reader.onloadend = function(e) {
+            callback(null, this.result);
+          };
 
-        reader.readAsArrayBuffer(file);
+          reader.readAsArrayBuffer(file);
+        });
       },
       function onError(err) {
         callback(err);
@@ -42,6 +49,8 @@ exports.writeFile = function(fileName, data, callback) {
 
         fileWriter.write(data);
       });
+    }, function onError(err) {
+      callback(err);
     });
   });
 };
