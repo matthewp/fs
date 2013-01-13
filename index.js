@@ -47,6 +47,15 @@ exports.writeFile = function(fileName, data, callback) {
           callback(e.toString());
         };
 
+        if(!Array.isArray(data)) {
+          if(data instanceof ArrayBuffer) {
+            var view = new Uint8Array(data);
+            data = new Blob([view]);
+          } else {
+            data = new Blob([data]);
+          }
+        }
+
         fileWriter.write(data);
       });
     }, function onError(err) {
@@ -59,6 +68,6 @@ exports.removeFile = function(fileName, callback) {
   init(function(fs) {
     fs.root.getFile(fileName, {create:false}, function(fileEntry) {
       fileEntry.remove(callback);
-    });
+    }, callback);
   });
 };
