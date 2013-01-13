@@ -1,18 +1,24 @@
 var fs = null;
+function ensureSize(size, then) {
+  var rFS = window.requestFileSystem
+    || window.webkitRequestFileSystem;
+
+  var pers = window.PERSISTENT;
+
+  window.webkitStorageInfo.requestQuota(pers, size, function(grantedBytes) {
+    rFS(pers, grantedBytes, function(fss) {
+      fs = fss;
+      then(fs);
+    });
+  });
+}
+
 function init(then) {
   if(fs) {
     then(fs); return;
   }
 
-  var rFS = window.requestFileSystem
-    || window.webkitRequestFileSystem;
-
-  var size = 1024*1024,
-      pers = window.PERSISTENT;
-
-  window.webkitStorageInfo.requestQuota(pers, size, function(grantedBytes) {
-    rFS(pers, size, then);
-  });
+  ensureSize(1024*1024, then);
 }
 
 exports.readFile = function(fileName, callback) {
@@ -36,25 +42,27 @@ exports.readFile = function(fileName, callback) {
 };
 
 exports.writeFile = function(fileName, data, callback) {
-  init(function(fs) {
+  if(!Array.isArray(data)
+    && !(data instanceof File)) {
+    if(data instanceof ArrayBuffer) {
+      var view = new Uint8Array(data);
+      data = new Blob([view]);
+    } else {
+      data = new Blob([data]);
+    }
+  }
+
+  ensureSize(data.size, function(fs) {
     fs.root.getFile(fileName, {create: true}, function(fileEntry) {
       fileEntry.createWriter(function(fileWriter) {
+        var err = null;
         fileWriter.onwriteend = function(e) {
-          callback(null);
+          callback(err);
         };
 
         fileWriter.onerror = function(e) {
-          callback(e.toString());
+          err = e.toString();
         };
-
-        if(!Array.isArray(data)) {
-          if(data instanceof ArrayBuffer) {
-            var view = new Uint8Array(data);
-            data = new Blob([view]);
-          } else {
-            data = new Blob([data]);
-          }
-        }
 
         fileWriter.write(data);
       });
