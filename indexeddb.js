@@ -65,3 +65,13 @@ exports.writeFile = function (fileName, data, callback) {
     };
   });
 };
+
+exports.removeFile = function (fileName, callback) {
+  initOS('readwrite', function (os) {
+    var req = os.delete(fileName);
+
+    req.onerror = req.onsuccess = function (e) {
+      callback();
+    };
+  });
+};
