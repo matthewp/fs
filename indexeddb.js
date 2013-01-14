@@ -61,7 +61,7 @@ exports.writeFile = function (fileName, data, callback) {
     };
 
     req.onsuccess = function (e) {
-      callback();
+      callback(null);
     };
   });
 };
