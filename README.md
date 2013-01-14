@@ -33,3 +33,11 @@ Retrieves the file with the name ``fileName`` and calls the ``callback``. The fi
 ### fs.removeFile(fileName, callback)
 
 Removes the file with the name ``fileName`` from storage and calls the ``callback``. The callback is called even if the file doesn't exist.
+
+## IN PROGRESS
+
+This component is still in very early stages, but plans are to include methods such as:
+
+* readString - Get a file and return it as a string.
+* readJson - Get a file and return it as an object.
+* readDir - List the contents of a directory.
