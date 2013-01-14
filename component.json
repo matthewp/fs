@@ -8,6 +8,8 @@
   "development": {},
   "license": "MIT",
   "scripts": [
-    "index.js"
+    "index.js",
+	"filesystem.js",
+	"indexeddb.js"
   ]
 }
