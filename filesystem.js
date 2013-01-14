@@ -79,3 +79,28 @@ exports.removeFile = function (fileName, callback) {
     }, callback);
   });
 };
+
+exports.readdir = function (directoryName, callback) {
+  init(function (fs) {
+    fs.root.getDirectory(directoryName, { create: true }, function (dirEntry) {
+      if (!dirEntry.isDirectory) {
+        callback('Not a directory'); return;
+      }
+
+      var dirReader = dirEntry.createReader(), entries = [];
+      var readEntries = function () {
+        dirReader.readEntries(function (results) {
+          if (!results.length) {
+            callback(null, entries);
+          } else {
+            results = Array.prototype.slice.call(results || []);
+            entries = entries.concat(results);
+            readEntries();
+          }
+        });
+      };
+
+      readEntries();
+    });
+  });
+};
