@@ -28,7 +28,11 @@ Saves the file ``data`` with the name ``fileName`` and calls the ``callback``. I
 
 ### fs.readFile(fileName, callback)
 
-Retrieves the file with the name ``fileName`` and calls the ``callback``. The first parameter of the callback is an ``Error`` object or null, the second parameter is the file's data.
+Retrieves the file with the name ``fileName`` and calls the ``callback``. The first parameter of the callback is an ``Error`` object or null, the second parameter is the file's data as an ``ArrayBuffer``.
+
+### fs.readString(fileName, callback)
+
+Retrieves the file with the name ``fileName`` and calls the ``callback. The first parameter of the callback is an ``Error`` or null, the second parameter is a string.
 
 ### fs.removeFile(fileName, callback)
 
@@ -66,5 +70,4 @@ A convenience method for calling ``readFile(fileName, callback)``. Throws a Type
 
 This component is still in very early stages, but plans are to include methods such as:
 
-* readString - Get a file and return it as a string.
 * readJson - Get a file and return it as an object.

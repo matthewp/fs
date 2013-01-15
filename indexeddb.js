@@ -1,5 +1,17 @@
 var path = require('path');
 
+function ab2str(buf) {
+  return String.fromCharCode.apply(null, new Uint16Array(buf));
+}
+function str2ab(str) {
+  var buf = new ArrayBuffer(str.length * 2); // 2 bytes for each char
+  var bufView = new Uint16Array(buf);
+  for (var i = 0, strLen = str.length; i < strLen; i++) {
+    bufView[i] = str.charCodeAt(i);
+  }
+  return buf;
+}
+
 var DB_NAME = window.location.host + '_filesystem',
     OS_NAME = 'files',
     DIR_IDX = 'dir';
@@ -28,7 +40,7 @@ function initOS(type, callback) {
   });
 }
 
-exports.readFile = function (fileName, callback) {
+var readFile = function (fileName, callback) {
   initOS('readonly', function (os) {
     var req = os.get(fileName);
 
@@ -43,8 +55,26 @@ exports.readFile = function (fileName, callback) {
         callback(null, res.data);
       } else {
         callback('File not found');
-      }     
+      }
     };
+  });
+};
+
+exports.readFile = function (fileName, callback) {
+  readFile(fileName, function (err, data) {
+    if (!err && !(data instanceof ArrayBuffer)) {
+      data = str2ab(data.toString());
+    }
+    callback(err, data);
+  });
+};
+
+exports.readString = function (fileName, callback) {
+  readFile(fileName, function (err, data) {
+    if (!err && (data instanceof ArrayBuffer)) {
+      data = ab2str(data);
+    }
+    callback(err, data);
   });
 };
 

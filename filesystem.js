@@ -21,7 +21,7 @@ function init(then) {
   ensureSize(1024 * 1024, then);
 }
 
-exports.readFile = function (fileName, callback) {
+var readFile = function (fileName, callback, readMethod) {
   init(function (fs) {
     fs.root.getFile(fileName, {},
       function onSuccess(fileEntry) {
@@ -32,13 +32,21 @@ exports.readFile = function (fileName, callback) {
             callback(null, this.result);
           };
 
-          reader.readAsArrayBuffer(file);
+          reader[readMethod](file);
         });
       },
       function onError(err) {
         callback(err);
       });
   });
+}
+
+exports.readFile = function (fileName, callback) {
+  return readFile(fileName, callback, 'readAsArrayBuffer');
+};
+
+exports.readString = function (fileName, callback) {
+  return readFile(fileName, callback, 'readAsText');
 };
 
 exports.writeFile = function (fileName, data, callback) {
