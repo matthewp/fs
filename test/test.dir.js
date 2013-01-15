@@ -64,3 +64,17 @@ describe('Directory with files', function () {
   });
 
 });
+
+describe('Manipulating directories', function () {
+  var fs = require('fs');
+
+  describe('Creating a directory.', function () {
+    var dirName = 'dir-foobar';
+
+    it('Should not return an error', function (done) {
+      fs.mkdir(dirName, function (err) {
+        done(assert(!err));
+      });
+    });
+  });
+});

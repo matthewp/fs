@@ -115,3 +115,13 @@ exports.readdir = function (directoryName, callback) {
     });
   });
 };
+
+exports.mkdir = function (path, callback) {
+  init(function (fs) {
+    fs.root.getDirectory(path, { create: true }, function () {
+      callback();
+    }, function (err) {
+      callback(err);
+    });
+  });
+};

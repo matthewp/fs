@@ -107,12 +107,16 @@ exports.removeFile = function (fileName, callback) {
   });
 };
 
+function withTrailingSlash(path) {
+  var directoryWithTrailingSlash = path[path.length - 1] === '/'
+    ? path
+    : path + '/';
+  return directoryWithTrailingSlash;
+}
+
 exports.readdir = function (directoryName, callback) {
   initOS('readonly', function (os) {
-    var directoryWithTrailingSlash = directoryName[directoryName.length - 1] === '/'
-      ? directoryName
-      : directoryName + '/';
-    var dir = path.dirname(directoryWithTrailingSlash);
+    var dir = path.dirname(withTrailingSlash(directoryName));
 
     var idx = os.index(DIR_IDX);
     var range = IDBKeyRange.only(dir);
@@ -133,6 +137,26 @@ exports.readdir = function (directoryName, callback) {
       } else {
         callback(null, results);
       }
+    };
+  });
+};
+
+exports.mkdir = function (fullPath, callback) {
+  initOS('readwrite', function (os) {
+    var dir = withTrailingSlash(path);
+   
+    var req = os.put({
+      "path": fullPath,
+      "dir": path.dirname(dir),
+      "type": "directory"
+    });
+
+    req.onerror = function (e) {
+      callback(e);
+    };
+
+    req.onsuccess = function (e) {
+      callback(null);
     };
   });
 };
