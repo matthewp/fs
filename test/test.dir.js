@@ -31,9 +31,9 @@ describe('Directory with files', function () {
 
   var err, files;
   before(function (done) {
-    fs.writeFile('./foo/dir-file-one.txt', 'Foo', function () {
-      fs.writeFile('./foo/dir-file-two.txt', 'bar', function () {
-        fs.readdir('foo/', function (e, f) {
+    fs.writeFile('foo/dir-file-one.txt', 'Foo', function () {
+      fs.writeFile('foo/dir-file-two.txt', 'bar', function () {
+        fs.readdir('foo', function (e, f) {
           err = e;
           files = f;
           done();

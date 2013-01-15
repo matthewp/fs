@@ -1,6 +1,9 @@
+var path = require('path');
+
 var DB_NAME = window.location.host + '_filesystem',
     OS_NAME = 'files',
     DIR_IDX = 'dir';
+
 function init(callback) {
   var req = window.indexedDB.open(DB_NAME, 1);
 
@@ -45,7 +48,6 @@ exports.readFile = function (fileName, callback) {
   });
 };
 
-var dirRegExp = /[\/]{1}([^\/]+[\/])*([^\/]*)/;
 var writeObject = function (name, type, data, callback) {
   initOS('readwrite', function (os) {
     var dir = fileName.match(dirRegExp);
@@ -68,14 +70,9 @@ var writeObject = function (name, type, data, callback) {
 
 exports.writeFile = function (fileName, data, callback) {
   initOS('readwrite', function (os) {
-    var dir = fileName.match(dirRegExp);
-    if (dir) {
-      console.log(dir[1]);
-    }
-
     var req = os.put({
       "path": fileName,
-      "dir": (dir && dir[1]) || '/',
+      "dir": path.dirname(fileName),
       "data": data
     });
 
@@ -101,8 +98,13 @@ exports.removeFile = function (fileName, callback) {
 
 exports.readdir = function (directoryName, callback) {
   initOS('readonly', function (os) {
+    var directoryWithTrailingSlash = directoryName[directoryName.length - 1] === '/'
+      ? directoryName
+      : directoryName + '/';
+    var dir = path.dirname(directoryWithTrailingSlash);
+
     var idx = os.index(DIR_IDX);
-    var range = IDBKeyRange.only(directoryName);
+    var range = IDBKeyRange.only(dir);
     var req = idx.openCursor(range);
 
     req.onerror = function (e) {
