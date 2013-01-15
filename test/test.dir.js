@@ -27,7 +27,8 @@ describe('Empty directory', function () {
 });
 
 describe('Directory with files', function () {
-  var fs = require('fs');
+  var fs = require('fs'),
+      DirectoryEntry = fs.DirectoryEntry;
 
   var err, files;
   before(function (done) {
@@ -49,6 +50,12 @@ describe('Directory with files', function () {
 
     it('Should have an array for the files', function () {
       assert(Array.isArray(files));
+    });
+
+    it('Should contain DirectoryEntry objects', function () {
+      assert(files.every(function (item) {
+        return item instanceof DirectoryEntry;
+      }));
     });
 
     it('Should have 2 files in the directory.', function () {

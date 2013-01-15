@@ -34,10 +34,37 @@ Retrieves the file with the name ``fileName`` and calls the ``callback``. The fi
 
 Removes the file with the name ``fileName`` from storage and calls the ``callback``. The callback is called even if the file doesn't exist.
 
+### fs.readdir(directoryName, callback)
+
+Gets the contents of ``directoryName`` (should be the full path) and calls the ``callback``. The callback will contain an array of ``DirectoryEntry`` objects (see below).
+
+### DirectoryEntry
+
+A ``DirectoryEntry`` object is passed to the callback of ``fs.readdir`` and represents either a **file** or a **directory**. A DirectoryEntry instance contains these properties/methods:
+
+#### path
+
+The ``path`` property is the full path (including file name) for the given file/directory entry.
+
+#### name
+
+The ``name`` of the given entry, either the file or directory name.
+
+#### dir
+
+The given directory that the file/directory sits in.
+
+#### type
+
+The ``type`` of the entry, either **file** or **directory**.
+
+#### readFile(callback)
+
+A convenience method for calling ``readFile(fileName, callback)``. Throws a TypeError if the entry is not of ``type`` **file**.
+
 ## IN PROGRESS
 
 This component is still in very early stages, but plans are to include methods such as:
 
 * readString - Get a file and return it as a string.
 * readJson - Get a file and return it as an object.
-* readDir - List the contents of a directory.

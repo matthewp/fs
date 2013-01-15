@@ -48,31 +48,12 @@ exports.readFile = function (fileName, callback) {
   });
 };
 
-var writeObject = function (name, type, data, callback) {
-  initOS('readwrite', function (os) {
-    var dir = fileName.match(dirRegExp);
-
-    var req = os.put({
-      "path": fileName,
-      "dir": (dir && dir[0]) || '/',
-      "data": data
-    });
-
-    req.onerror = function (e) {
-      callback(e);
-    };
-
-    req.onsuccess = function (e) {
-      callback(null);
-    };
-  });
-};
-
 exports.writeFile = function (fileName, data, callback) {
   initOS('readwrite', function (os) {
     var req = os.put({
       "path": fileName,
       "dir": path.dirname(fileName),
+      "type": "file",
       "data": data
     });
 
@@ -115,7 +96,9 @@ exports.readdir = function (directoryName, callback) {
     req.onsuccess = function (e) {
       var cursor = e.target.result;
       if (cursor) {
-        results.push(cursor.value);
+        var value = cursor.value;
+        var entry = new exports.DirectoryEntry(value.path, value.type);
+        results.push(entry);
         cursor.continue();
       } else {
         callback(null, results);

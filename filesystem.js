@@ -94,7 +94,10 @@ exports.readdir = function (directoryName, callback) {
             callback(null, entries);
           } else {
             results = Array.prototype.slice.call(results || []);
-            entries = entries.concat(results);
+            entries = entries.concat(results.map(function(result) {
+              return new exports.DirectoryEntry(result.fullPath,
+                result.isDirectory ? 'directory' : 'file');
+            }));
             readEntries();
           }
         });
