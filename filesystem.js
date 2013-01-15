@@ -125,3 +125,11 @@ exports.mkdir = function (path, callback) {
     });
   });
 };
+
+exports.rmdir = function (path, callback) {
+  init(function (fs) {
+    fs.root.getDirectory(path, {}, function (dirEntry) {
+      dirEntry.remove(callback);
+    });
+  });
+};

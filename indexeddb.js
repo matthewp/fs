@@ -160,3 +160,20 @@ exports.mkdir = function (fullPath, callback) {
     };
   });
 };
+
+exports.rmdir = function (fullPath, callback) {
+  exports.readdir(fullPath, function removeFiles(files) {
+    if (!files || !files.length) {
+      return exports.removeFile(fullPath, callback);
+    }
+
+    var file = files.shift(),
+        func = file.type === 'directory'
+          ? exports.rmdir
+          : exports.removeFile;
+
+    func(file.name, function () {
+      removeFiles(files);
+    });
+  });
+};

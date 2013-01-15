@@ -73,7 +73,29 @@ describe('Manipulating directories', function () {
 
     it('Should not return an error', function (done) {
       fs.mkdir(dirName, function (err) {
-        done(assert(!err));
+        fs.writeFile('dir-remfile1', 'foo bar', function () {
+          fs.writeFile('dir-remfile2', 'baz buz', function () {
+            done();
+          });
+        });
+      });
+    });
+  });
+
+  describe('Removing a directory with files.', function () {
+    var dirName = 'dir-remme';
+
+    beforeEach(function (done) {
+      fs.mkdir(dirName, done);
+    });
+
+    it('Should call the callback.', function () {
+      fs.rmdir(dirName, assert.bind(null, true));
+    });
+
+    it('Should return an empty array for the files', function (done) {
+      fs.readdir(dirName, function (err, files) {
+        done(assert(!files.length));
       });
     });
   });
