@@ -90,7 +90,7 @@ exports.removeFile = function (fileName, callback) {
 
 exports.readdir = function (directoryName, callback) {
   init(function (fs) {
-    fs.root.getDirectory(directoryName, { create: true }, function (dirEntry) {
+    var readdir = function (dirEntry) {
       if (!dirEntry.isDirectory) {
         callback('Not a directory'); return;
       }
@@ -112,7 +112,13 @@ exports.readdir = function (directoryName, callback) {
       };
 
       readEntries();
-    });
+    };
+
+    if(['','.','/'].indexOf(directoryName) !== -1) {
+      readdir(fs.root);
+    } else {
+      fs.root.getDirectory(directoryName, { create: true }, readdir);
+    }
   });
 };
 

@@ -1,0 +1,15 @@
+{
+  "name": "path",
+  "version": "1.0.0",
+  "description": "Path utilities",
+  "keywords": [
+    "path",
+    "basename",
+    "dirname",
+    "extname"
+  ],
+  "scripts": [
+    "index.js"
+  ],
+  "repo": "https://raw.github.com/component/path"
+}

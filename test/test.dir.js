@@ -65,6 +65,18 @@ describe('Directory with files', function () {
 
 });
 
+describe('Root directory', function() {
+  var fs = require('fs');
+
+  describe('Listing contents', function() {
+    it('Should be able to list', function(done) {
+      fs.readdir('', function() {
+        done(assert(true));
+      });
+    });
+  });
+});
+
 describe('Manipulating directories', function () {
   var fs = require('fs');
 
