@@ -56,22 +56,22 @@ Removes the directory at ``fullPath``, recursively removing any files/subdirecto
 
 A ``DirectoryEntry`` object is passed to the callback of ``fs.readdir`` and represents either a **file** or a **directory**. A DirectoryEntry instance contains these properties/methods:
 
-#### path
+### DirectoryEntry#path
 
 The ``path`` property is the full path (including file name) for the given file/directory entry.
 
-#### name
+### DirectoryEntry#name
 
 The ``name`` of the given entry, either the file or directory name.
 
-#### dir
+### DirectoryEntry#dir
 
 The given directory that the file/directory sits in.
 
-#### type
+### DirectoryEntry#type
 
 The ``type`` of the entry, either **file** or **directory**.
 
-#### readFile(callback)
+### DirectoryEntry#readFile(callback)
 
 A convenience method for calling ``readFile(fileName, callback)``. Throws a TypeError if the entry is not of ``type`` **file**.
