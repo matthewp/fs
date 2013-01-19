@@ -10,15 +10,17 @@ Implemented in a cross-browser fashion, using the [FileSystem API](http://www.w3
 
 ## Example
 
-    var fs = require('fs');
+```javascript
+var fs = require('fs');
 
-	document.querySelector('input[type="file"]').addEventListener('change', function(e) {
-      var file = this.files[0]; // file is a File object.
+document.querySelector('input[type="file"]').addEventListener('change', function(e) {
+    var file = this.files[0]; // file is a File object.
 
-	  fs.writeFile(file.name, file, function() {
-	    // All done! File has been saved.
-	  });
-	});
+  fs.writeFile(file.name, file, function() {
+    // All done! File has been saved.
+  });
+});
+```
 
 ## API
 
