@@ -6,7 +6,29 @@ Implemented in a cross-browser fashion, using the [FileSystem API](http://www.w3
 
 ## Installation
 
+### Component
+
+If using ``component`` installation is easy:
+
     $ component install matthewp/fs
+
+### AMD / Common JS
+
+If using AMD or Common JS just through ``dist/fs-0.0.1.min.js`` somewhere that your module loader can find it and use it.
+
+### All others
+
+If you don't like the module loaders you can still use fs by simply including it in your html:
+
+```html
+<script src="fs-0.0.1.min.js"></script>
+```
+
+A single object will be attached to ``window`` called fs, grab it and use it:
+
+```javascript
+var fs = window.fs;
+```
 
 ## Example
 
