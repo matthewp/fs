@@ -14,7 +14,7 @@ If using ``component`` installation is easy:
 
 ### AMD / Common JS
 
-If using AMD or Common JS just through ``dist/fs-0.0.1.min.js`` somewhere that your module loader can find it and use it.
+If using AMD or Common JS just throw ``dist/fs-0.0.1.min.js`` somewhere that your module loader can find it and use it.
 
 ### All others
 
