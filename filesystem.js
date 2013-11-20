@@ -2,10 +2,13 @@ var fs = null;
 function ensureSize(size, then) {
   var rFS = window.requestFileSystem
     || window.webkitRequestFileSystem;
+  
+  var storageInfo = window.webkitStorageInfo
+    || navigator.webkitPersistentStorage;
 
   var pers = window.PERSISTENT;
 
-  window.webkitStorageInfo.requestQuota(pers, size, function (grantedBytes) {
+  storageInfo.requestQuota(pers, size, function (grantedBytes) {
     rFS(pers, grantedBytes, function (fss) {
       fs = fss;
       then(fs);
