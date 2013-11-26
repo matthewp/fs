@@ -8,4 +8,8 @@ components: component.json
 clean:
 	rm -fr build components
 
+release:
+	@component build -o dist -n fs --standalone fs
+	@uglifyjs dist/fs.js -o dist/fs.min.js
+
 .PHONY: clean

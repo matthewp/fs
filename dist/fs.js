@@ -1,12 +1,5 @@
 ;(function(){
 
-
-/**
- * hasOwnProperty.
- */
-
-var has = Object.prototype.hasOwnProperty;
-
 /**
  * Require the given path.
  *
@@ -34,10 +27,14 @@ function require(path, parent, orig) {
   // perform real require()
   // by invoking the module's
   // registered function
-  if (!module.exports) {
-    module.exports = {};
-    module.client = module.component = true;
-    module.call(this, module.exports, require.relative(resolved), module);
+  if (!module._resolving && !module.exports) {
+    var mod = {};
+    mod.exports = {};
+    mod.client = mod.component = true;
+    module._resolving = true;
+    module.call(this, mod.exports, require.relative(resolved), mod);
+    delete module._resolving;
+    module.exports = mod.exports;
   }
 
   return module.exports;
@@ -71,7 +68,6 @@ require.aliases = {};
 
 require.resolve = function(path) {
   if (path.charAt(0) === '/') path = path.slice(1);
-  var index = path + '/index.js';
 
   var paths = [
     path,
@@ -83,11 +79,8 @@ require.resolve = function(path) {
 
   for (var i = 0; i < paths.length; i++) {
     var path = paths[i];
-    if (has.call(require.modules, path)) return path;
-  }
-
-  if (has.call(require.aliases, index)) {
-    return require.aliases[index];
+    if (require.modules.hasOwnProperty(path)) return path;
+    if (require.aliases.hasOwnProperty(path)) return require.aliases[path];
   }
 };
 
@@ -140,7 +133,7 @@ require.register = function(path, definition) {
  */
 
 require.alias = function(from, to) {
-  if (!has.call(require.modules, from)) {
+  if (!require.modules.hasOwnProperty(from)) {
     throw new Error('Failed to alias "' + from + '", it does not exist');
   }
   require.aliases[to] = from;
@@ -202,7 +195,7 @@ require.relative = function(parent) {
    */
 
   localRequire.exists = function(path) {
-    return has.call(require.modules, localRequire.resolve(path));
+    return require.modules.hasOwnProperty(localRequire.resolve(path));
   };
 
   return localRequire;
@@ -255,10 +248,13 @@ var fs = null;
 function ensureSize(size, then) {
   var rFS = window.requestFileSystem
     || window.webkitRequestFileSystem;
+  
+  var storageInfo = window.webkitStorageInfo
+    || navigator.webkitPersistentStorage;
 
   var pers = window.PERSISTENT;
 
-  window.webkitStorageInfo.requestQuota(pers, size, function (grantedBytes) {
+  storageInfo.requestQuota(pers, size, function (grantedBytes) {
     rFS(pers, grantedBytes, function (fss) {
       fs = fss;
       then(fs);
@@ -576,11 +572,11 @@ exports.rmdir = function (fullPath, callback) {
 };
 });
 require.alias("component-path/index.js", "fs/deps/path/index.js");
-
+require.alias("component-path/index.js", "path/index.js");
 if (typeof exports == "object") {
   module.exports = require("fs");
 } else if (typeof define == "function" && define.amd) {
   define(function(){ return require("fs"); });
 } else {
-  window["fs"] = require("fs");
+  this["fs"] = require("fs");
 }})();
