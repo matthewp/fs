@@ -35,7 +35,7 @@ describe('Write', function () {
 
   function getPicture(callback) {
     var req = new XMLHttpRequest();
-    req.open('GET', '/test/picture.jpg', true);
+    req.open('GET', 'picture.jpg', true);
     req.responseType = 'arraybuffer';
 
     req.onload = function (e) {
