@@ -1,6 +1,4 @@
-exports = module.exports = (window.requestFileSystem || window.webkitRequestFileSystem)
-  ? require('./filesystem')
-  : require('./indexeddb');
+exports = module.exports = require('./indexeddb');
 
 exports.DirectoryEntry = require('./directory_entry');
 

@@ -9,7 +9,7 @@ clean:
 	rm -fr build components
 
 release:
-	@component build -o dist -n fs --standalone fs
+	@component build -o dist -n fs -s fs
 	@uglifyjs dist/fs.js -o dist/fs.min.js
 
 .PHONY: clean

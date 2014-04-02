@@ -2,7 +2,7 @@
   "name": "fs",
   "repo": "matthewp/fs",
   "description": "File system abstraction layer",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "keywords": [],
   "dependencies": {
 	"component/path": "1.0.0"
@@ -11,8 +11,7 @@
   "license": "MIT",
   "scripts": [
     "index.js",
-	"directory_entry.js",
-	"filesystem.js",
-	"indexeddb.js"
+    "directory_entry.js",
+    "indexeddb.js"
   ]
 }
