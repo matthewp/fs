@@ -53,7 +53,7 @@ Retrieves the file with the name ``fileName`` and calls the ``callback``. The fi
 
 ### fs.readString(fileName, callback)
 
-Retrieves the file with the name ``fileName`` and calls the ``callback. The first parameter of the callback is an ``Error`` or null, the second parameter is a string.
+Retrieves the file with the name ``fileName`` and calls the `callback`. The first parameter of the callback is an ``Error`` or null, the second parameter is a string.
 
 ### fs.removeFile(fileName, callback)
 
