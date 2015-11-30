@@ -14,6 +14,8 @@ npm install fs-web --save
 
 ## Example
 
+Writing from a file input.
+
 ```javascript
 import { writeFile } from 'fs-web';
 
@@ -23,6 +25,18 @@ input.addEventListener('change', function(e) {
 
   writeFile(file.name, file, function() {
     // All done! File has been saved.
+  });
+});
+```
+
+Writing and reading.
+
+```js
+import * as fs from 'fs-web';
+
+fs.writeFile('foo/some-file.txt', 'foo', function(){
+  fs.readdir('foo', function(err, files){
+    files // -> [ {some-file.txt} ]
   });
 });
 ```
