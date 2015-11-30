@@ -28,7 +28,8 @@
     "chai": "^3.4.1",
     "steal": "^0.12.7",
     "steal-mocha": "0.0.3",
-    "steal-tools": "^0.12.3"
+    "steal-tools": "^0.12.3",
+    "testee": "^0.2.2"
   },
   "dependencies": {
     "path": "git://github.com/component/path#7b4f23c38833a5232cd5e3d50ccb8cd13dbcd2f4"
