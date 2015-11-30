@@ -1,6 +1,6 @@
 # fs-web
 
-Bringing a file system abstraction to the browser. **fs** is a [component](https://github.com/component/component) that allows you to store data in the (modern) browser using an API similar to that of Node's [fs module](http://nodejs.org/api/fs.html)
+Bringing a file system abstraction to the browser. **fs** is a module that allows you to store data in the (modern) browser using an API similar to that of Node's [fs module](http://nodejs.org/api/fs.html)
 
 Implemented in a cross-browser fashion, using [IndexedDB](http://www.w3.org/TR/IndexedDB/).
 
