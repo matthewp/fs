@@ -26,6 +26,7 @@ stealExport({
       dest: __dirname + "/dist/fs.min.js",
       transpile: "global",
       normalize: denpm
-    }
+    },
+    "+cjs": {}
   }
 });

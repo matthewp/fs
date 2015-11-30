@@ -1,44 +1,27 @@
-# fs
+# fs-web
 
 Bringing a file system abstraction to the browser. **fs** is a [component](https://github.com/component/component) that allows you to store data in the (modern) browser using an API similar to that of Node's [fs module](http://nodejs.org/api/fs.html)
 
-Implemented in a cross-browser fashion, using the [FileSystem API](http://www.w3.org/TR/file-system-api/) (for Chrome) or [IndexedDB](http://www.w3.org/TR/IndexedDB/) (for Firefox/IE).
+Implemented in a cross-browser fashion, using [IndexedDB](http://www.w3.org/TR/IndexedDB/).
 
 ## Installation
 
-### Component
+Install via npm:
 
-If using ``component`` installation is easy:
-
-    $ component install matthewp/fs
-
-### AMD / Common JS
-
-If using AMD or Common JS just throw ``dist/fs-0.0.1.min.js`` somewhere that your module loader can find it and use it.
-
-### All others
-
-If you don't like the module loaders you can still use fs by simply including it in your html:
-
-```html
-<script src="fs-0.0.1.min.js"></script>
-```
-
-A single object will be attached to ``window`` called fs, grab it and use it:
-
-```javascript
-var fs = window.fs;
+```shell
+npm install fs-web --save
 ```
 
 ## Example
 
 ```javascript
-var fs = require('fs');
+import { writeFile } from 'fs-web';
 
-document.querySelector('input[type="file"]').addEventListener('change', function(e) {
-    var file = this.files[0]; // file is a File object.
+let input = document.querySelector('input[type="file"]'); 
+input.addEventListener('change', function(e) {
+  let file = this.files[0]; // file is a File object.
 
-  fs.writeFile(file.name, file, function() {
+  writeFile(file.name, file, function() {
     // All done! File has been saved.
   });
 });
@@ -97,3 +80,7 @@ The ``type`` of the entry, either **file** or **directory**.
 ### DirectoryEntry#readFile(callback)
 
 A convenience method for calling ``readFile(fileName, callback)``. Throws a TypeError if the entry is not of ``type`` **file**.
+
+## License
+
+BSD 2 Clause

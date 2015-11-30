@@ -2,7 +2,7 @@
   "name": "fs-web",
   "version": "1.0.0",
   "description": "Node's fs, for the browser",
-  "main": "index.js",
+  "main": "dist/cjs/index.js",
   "directories": {
     "test": "test"
   },
@@ -35,6 +35,7 @@
     "path": "git://github.com/component/path#7b4f23c38833a5232cd5e3d50ccb8cd13dbcd2f4"
   },
   "system": {
+    "main": "index.js",
     "map": {
       "chai": "chai/chai"
     },
