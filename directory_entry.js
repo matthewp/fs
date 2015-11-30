@@ -1,4 +1,4 @@
-var path = require('path');
+import path from 'path';
 
 function DirectoryEntry(fullPath, type) {
   this.path = fullPath;
@@ -7,4 +7,4 @@ function DirectoryEntry(fullPath, type) {
   this.type = type;
 }
 
-module.exports = DirectoryEntry;
+export { DirectoryEntry as default };

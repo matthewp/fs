@@ -1,6 +1,10 @@
-describe('Read', function () {
-  var fs = require('fs');
+import chai from 'chai';
+import * as fs from 'fs-web';
+import 'steal-mocha';
 
+const { assert } = chai;
+
+describe('Read', function () {
   describe('Reading a file that doesn\'t exist', function () {
     it('Should return an error', function (done) {
       fs.readFile('some-fake-file.txt', function (err, data) {

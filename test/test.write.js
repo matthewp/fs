@@ -1,6 +1,10 @@
-describe('Write', function () {
-  var fs = require('fs');
+import * as fs from 'fs-web';
+import chai from 'chai';
+import 'steal-mocha';
 
+const { assert } = chai;
+
+describe('Write', function () {
   var TEST_FILE = 'write-test.txt';
   before(function (done) {
     fs.writeFile(TEST_FILE, 'Foo bar', function () {

@@ -1,28 +1,29 @@
-var path = require('path');
+import path from 'path';
+import DirectoryEntry from './directory_entry';
 
 function ab2str(buf) {
   return String.fromCharCode.apply(null, new Uint16Array(buf));
 }
 function str2ab(str) {
-  var buf = new ArrayBuffer(str.length * 2); // 2 bytes for each char
-  var bufView = new Uint16Array(buf);
-  for (var i = 0, strLen = str.length; i < strLen; i++) {
+  const buf = new ArrayBuffer(str.length * 2); // 2 bytes for each char
+  const bufView = new Uint16Array(buf);
+  for (let i = 0, strLen = str.length; i < strLen; i++) {
     bufView[i] = str.charCodeAt(i);
   }
   return buf;
 }
 
-var DB_NAME = window.location.host + '_filesystem',
+const DB_NAME = window.location.host + '_filesystem',
     OS_NAME = 'files',
     DIR_IDX = 'dir';
 
 function init(callback) {
-  var req = window.indexedDB.open(DB_NAME, 1);
+  const req = window.indexedDB.open(DB_NAME, 1);
 
   req.onupgradeneeded = function (e) {
-    var db = e.target.result;
+    const db = e.target.result;
 
-    var objectStore = db.createObjectStore(OS_NAME, { keyPath: 'path' });
+    const objectStore = db.createObjectStore(OS_NAME, { keyPath: 'path' });
     objectStore.createIndex(DIR_IDX, 'dir', { unique: false });
   };
 
@@ -33,23 +34,23 @@ function init(callback) {
 
 function initOS(type, callback) {
   init(function (db) {
-    var trans = db.transaction([OS_NAME], type),
+    const trans = db.transaction([OS_NAME], type),
         os = trans.objectStore(OS_NAME);
 
     callback(os);
   });
 }
 
-var readFile = function (fileName, callback) {
+let readFrom = function (fileName, callback) {
   initOS('readonly', function (os) {
-    var req = os.get(fileName);
+    const req = os.get(fileName);
 
     req.onerror = function (e) {
       callback(e);
     };
 
     req.onsuccess = function (e) {
-      var res = e.target.result;
+      const res = e.target.result;
 
       if (res && res.data) {
         callback(null, res.data);
@@ -60,17 +61,17 @@ var readFile = function (fileName, callback) {
   });
 };
 
-exports.readFile = function (fileName, callback) {
-  readFile(fileName, function (err, data) {
+export function readFile(fileName, callback) {
+  readFrom(fileName, function (err, data) {
     if (!err && !(data instanceof ArrayBuffer)) {
       data = str2ab(data.toString());
     }
     callback(err, data);
   });
-};
+}
 
-exports.readString = function (fileName, callback) {
-  readFile(fileName, function (err, data) {
+export function readString(fileName, callback) {
+  readFrom(fileName, function (err, data) {
     if (!err && (data instanceof ArrayBuffer)) {
       data = ab2str(data);
     }
@@ -78,9 +79,9 @@ exports.readString = function (fileName, callback) {
   });
 };
 
-exports.writeFile = function (fileName, data, callback) {
+export function writeFile(fileName, data, callback) {
   initOS('readwrite', function (os) {
-    var req = os.put({
+    const req = os.put({
       "path": fileName,
       "dir": path.dirname(fileName),
       "type": "file",
@@ -97,9 +98,9 @@ exports.writeFile = function (fileName, data, callback) {
   });
 };
 
-exports.removeFile = function (fileName, callback) {
+export function removeFile(fileName, callback) {
   initOS('readwrite', function (os) {
-    var req = os.delete(fileName);
+    const req = os.delete(fileName);
 
     req.onerror = req.onsuccess = function (e) {
       callback();
@@ -108,30 +109,30 @@ exports.removeFile = function (fileName, callback) {
 };
 
 function withTrailingSlash(path) {
-  var directoryWithTrailingSlash = path[path.length - 1] === '/'
+  const directoryWithTrailingSlash = path[path.length - 1] === '/'
     ? path
     : path + '/';
   return directoryWithTrailingSlash;
 }
 
-exports.readdir = function (directoryName, callback) {
+export function readdir(directoryName, callback) {
   initOS('readonly', function (os) {
-    var dir = path.dirname(withTrailingSlash(directoryName));
+    const dir = path.dirname(withTrailingSlash(directoryName));
 
-    var idx = os.index(DIR_IDX);
-    var range = IDBKeyRange.only(dir);
-    var req = idx.openCursor(range);
+    const idx = os.index(DIR_IDX);
+    const range = IDBKeyRange.only(dir);
+    const req = idx.openCursor(range);
 
     req.onerror = function (e) {
       callback(e);
     };
 
-    var results = [];
+    const results = [];
     req.onsuccess = function (e) {
-      var cursor = e.target.result;
+      const cursor = e.target.result;
       if (cursor) {
-        var value = cursor.value;
-        var entry = new exports.DirectoryEntry(value.path, value.type);
+        const value = cursor.value;
+        const entry = new DirectoryEntry(value.path, value.type);
         results.push(entry);
         cursor.continue();
       } else {
@@ -141,11 +142,11 @@ exports.readdir = function (directoryName, callback) {
   });
 };
 
-exports.mkdir = function (fullPath, callback) {
+export function mkdir(fullPath, callback) {
   initOS('readwrite', function (os) {
-    var dir = withTrailingSlash(path);
-   
-    var req = os.put({
+    const dir = withTrailingSlash(path);
+
+    const req = os.put({
       "path": fullPath,
       "dir": path.dirname(dir),
       "type": "directory"
@@ -161,16 +162,16 @@ exports.mkdir = function (fullPath, callback) {
   });
 };
 
-exports.rmdir = function (fullPath, callback) {
-  exports.readdir(fullPath, function removeFiles(files) {
+export function rmdir(fullPath, callback) {
+  readdir(fullPath, function removeFiles(files) {
     if (!files || !files.length) {
-      return exports.removeFile(fullPath, callback);
+      return removeFile(fullPath, callback);
     }
 
-    var file = files.shift(),
+    const file = files.shift(),
         func = file.type === 'directory'
-          ? exports.rmdir
-          : exports.removeFile;
+          ? rmdir
+          : removeFile;
 
     func(file.name, function () {
       removeFiles(files);

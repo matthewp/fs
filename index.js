@@ -1,10 +1,12 @@
-exports = module.exports = require('./indexeddb');
+import { readFile } from './indexeddb';
+import DirectoryEntry from './directory_entry';
 
-exports.DirectoryEntry = require('./directory_entry');
-
-exports.DirectoryEntry.prototype.readFile = function (callback) {
+DirectoryEntry.prototype.readFile = function (callback) {
   if (this.type !== 'file') {
     throw new TypeError('Not a file.');
   }
-  return exports.readFile(this.path, callback);
+  return readFile(this.path, callback);
 };
+
+export * from './indexeddb';
+export { DirectoryEntry };

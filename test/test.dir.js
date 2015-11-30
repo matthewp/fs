@@ -1,9 +1,19 @@
-describe('Empty directory', function () {
-  var fs = require('fs');
+import chai from 'chai';
+import 'steal-mocha';
+import {
+  DirectoryEntry,
+  readdir,
+  writeFile,
+  mkdir,
+  rmdir
+} from 'fs-web';
 
+const { assert } = chai;
+
+describe('Empty directory', function () {
   var err, files;
   before(function (done) {
-    fs.readdir('dir-not-exist', function (e, f) {
+    readdir('dir-not-exist', function (e, f) {
       err = e;
       files = f;
       done();
@@ -27,14 +37,11 @@ describe('Empty directory', function () {
 });
 
 describe('Directory with files', function () {
-  var fs = require('fs'),
-      DirectoryEntry = fs.DirectoryEntry;
-
   var err, files;
   before(function (done) {
-    fs.writeFile('foo/dir-file-one.txt', 'Foo', function () {
-      fs.writeFile('foo/dir-file-two.txt', 'bar', function () {
-        fs.readdir('foo', function (e, f) {
+    writeFile('foo/dir-file-one.txt', 'Foo', function () {
+      writeFile('foo/dir-file-two.txt', 'bar', function () {
+        readdir('foo', function (e, f) {
           err = e;
           files = f;
           done();
@@ -66,11 +73,9 @@ describe('Directory with files', function () {
 });
 
 describe('Root directory', function() {
-  var fs = require('fs');
-
   describe('Listing contents', function() {
     it('Should be able to list', function(done) {
-      fs.readdir('', function() {
+      readdir('', function() {
         done(assert(true));
       });
     });
@@ -78,15 +83,13 @@ describe('Root directory', function() {
 });
 
 describe('Manipulating directories', function () {
-  var fs = require('fs');
-
   describe('Creating a directory.', function () {
     var dirName = 'dir-foobar';
 
     it('Should not return an error', function (done) {
-      fs.mkdir(dirName, function (err) {
-        fs.writeFile('dir-remfile1', 'foo bar', function () {
-          fs.writeFile('dir-remfile2', 'baz buz', function () {
+      mkdir(dirName, function (err) {
+        writeFile('dir-remfile1', 'foo bar', function () {
+          writeFile('dir-remfile2', 'baz buz', function () {
             done();
           });
         });
@@ -98,15 +101,15 @@ describe('Manipulating directories', function () {
     var dirName = 'dir-remme';
 
     beforeEach(function (done) {
-      fs.mkdir(dirName, done);
+      mkdir(dirName, done);
     });
 
     it('Should call the callback.', function () {
-      fs.rmdir(dirName, assert.bind(null, true));
+      rmdir(dirName, assert.bind(null, true));
     });
 
     it('Should return an empty array for the files', function (done) {
-      fs.readdir(dirName, function (err, files) {
+      readdir(dirName, function (err, files) {
         done(assert(!files.length));
       });
     });

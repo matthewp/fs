@@ -1,6 +1,10 @@
-describe('Remove', function () {
-  var fs = require('fs');
+import chai from 'chai';
+import * as fs from 'fs-web';
+import 'steal-mocha';
 
+const { assert } = chai;
+
+describe('Remove', function () {
   var TEST_FILE = 'rem-test.txt';
   before(function (done) {
     fs.writeFile(TEST_FILE, 'Foo bar', function () {
