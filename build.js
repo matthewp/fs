@@ -1,9 +1,12 @@
 var stealExport = require("steal-tools").export;
 
 var denpm = function(name){
-  var pkgName = name.substr(0, name.indexOf("@"));
-  var modulePath = name.substr(name.indexOf("#")+1);
-  return pkgName + "/" + modulePath;
+  if(name.indexOf("@") > 0) {
+    var pkgName = name.substr(0, name.indexOf("@"));
+    var modulePath = name.substr(name.indexOf("#")+1);
+    return pkgName + "/" + modulePath;
+  }
+  return name;
 };
 
 stealExport({
