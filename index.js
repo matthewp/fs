@@ -1,4 +1,4 @@
-import { readFile } from './indexeddb';
+import { readFile } from './core';
 import DirectoryEntry from './directory_entry';
 
 DirectoryEntry.prototype.readFile = function (callback) {
@@ -8,5 +8,5 @@ DirectoryEntry.prototype.readFile = function (callback) {
   return readFile(this.path, callback);
 };
 
-export * from './indexeddb';
+export * from './core';
 export { DirectoryEntry };
