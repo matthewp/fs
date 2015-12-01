@@ -7,9 +7,7 @@ const { assert } = chai;
 describe('Write', function () {
   var TEST_FILE = 'write-test.txt';
   before(function (done) {
-    fs.writeFile(TEST_FILE, 'Foo bar', function () {
-      done();
-    });
+    fs.writeFile(TEST_FILE, 'Foo bar').then(done);
   });
 
   function exists(obj) {
@@ -17,20 +15,20 @@ describe('Write', function () {
   }
 
   describe('Writing data to a file.', function () {
-    it('Should return null for the error.', function (done) {
-      fs.writeFile(TEST_FILE, 'Foo bar', function (err) {
-        done(assert(err === null));
+    it('Should not have an error.', function (done) {
+      fs.writeFile(TEST_FILE, 'Foo bar').then(function () {
+        done(assert(true));
       });
     });
 
     it('Retrieving that file should\'nt have an error.', function (done) {
-      fs.readFile(TEST_FILE, function (err, data) {
-        done(assert(err === null));
+      fs.readFile(TEST_FILE).then(function (data) {
+        done(assert(true));
       });
     });
 
     it('Retrieving should include data.', function (done) {
-      fs.readFile(TEST_FILE, function (err, data) {
+      fs.readFile(TEST_FILE).then(function(data) {
         done(assert(exists(data)));
       });
     });
@@ -42,18 +40,20 @@ describe('Write', function () {
     req.open('GET', 'picture.jpg', true);
     req.responseType = 'arraybuffer';
 
-    req.onload = function (e) {
-      callback(e.target.response);
-    };
+    return new Promise(function(resolve){
+      req.onload = function (e) {
+        resolve(e.target.response);
+      };
 
-    req.send();
+      req.send();
+    });
   }
 
   describe('Writing binary data to a file.', function () {
     it('Should return without an error.', function (done) {
-      getPicture(function (data) {
-        fs.writeFile('write-picture.jpg', data, function (err) {
-          done(assert(err === null));
+      getPicture().then(function (data) {
+        fs.writeFile('write-picture.jpg', data).then(function () {
+          done(assert(true));
         });
       });
     });

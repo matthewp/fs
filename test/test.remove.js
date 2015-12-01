@@ -7,9 +7,7 @@ const { assert } = chai;
 describe('Remove', function () {
   var TEST_FILE = 'rem-test.txt';
   before(function (done) {
-    fs.writeFile(TEST_FILE, 'Foo bar', function () {
-      done();
-    });
+    fs.writeFile(TEST_FILE, 'Foo bar').then(done);
   });
 
   function exists(obj) {
@@ -18,7 +16,7 @@ describe('Remove', function () {
 
   describe('Removing a file that exists.', function () {
     it('Should call the callback.', function (done) {
-      fs.removeFile(TEST_FILE, function (err, data) {
+      fs.removeFile(TEST_FILE).then(function() {
         done(assert(true));
       });
     });
@@ -26,7 +24,7 @@ describe('Remove', function () {
 
   describe('Removing a file that doesn\'t exist.', function () {
     it('Should call the callback.', function(done) {
-      fs.removeFile('rem-does-not-exist.txt', function () {
+      fs.removeFile('rem-does-not-exist.txt').then(function() {
         done(assert(true));
       });
     });

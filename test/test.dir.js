@@ -13,16 +13,14 @@ const { assert } = chai;
 describe('Empty directory', function () {
   var err, files;
   before(function (done) {
-    readdir('dir-not-exist', function (e, f) {
-      err = e;
+    readdir('dir-not-exist').then(function (f) {
       files = f;
-      done();
-    });
+    }, function (e) { err = e }).then(done);
   });
 
   describe('Listing an empty directory.', function () {
-    it('The error should be null', function (done) {
-      done(assert(err === null));
+    it('The error should be undefined', function (done) {
+      done(assert(err === undefined));
     });
 
     it('Should have an array for the files', function (done) {
@@ -39,20 +37,17 @@ describe('Empty directory', function () {
 describe('Directory with files', function () {
   var err, files;
   before(function (done) {
-    writeFile('foo/dir-file-one.txt', 'Foo', function () {
-      writeFile('foo/dir-file-two.txt', 'bar', function () {
-        readdir('foo', function (e, f) {
-          err = e;
-          files = f;
-          done();
-        });
-      });
-    });
+    writeFile('foo/dir-file-one.txt', 'Foo').then(function() {
+      return writeFile('foo/dir-file-two.txt', 'bar');
+    }).then(function(){
+      return readdir('foo');
+    }).then(function(f) { files = f; }, function(e){ err = e; })
+      .then(done);
   });
 
   describe('Listing a directory.', function () {
-    it('The error should be null', function () {
-      assert(err === null);
+    it('The error should be undefined', function () {
+      assert(err === undefined);
     });
 
     it('Should have an array for the files', function () {
@@ -75,7 +70,7 @@ describe('Directory with files', function () {
 describe('Root directory', function() {
   describe('Listing contents', function() {
     it('Should be able to list', function(done) {
-      readdir('', function() {
+      readdir('').then(function() {
         done(assert(true));
       });
     });
@@ -87,13 +82,11 @@ describe('Manipulating directories', function () {
     var dirName = 'dir-foobar';
 
     it('Should not return an error', function (done) {
-      mkdir(dirName, function (err) {
-        writeFile('dir-remfile1', 'foo bar', function () {
-          writeFile('dir-remfile2', 'baz buz', function () {
-            done();
-          });
-        });
-      });
+      mkdir(dirName).then(function () {
+        return writeFile('dir-remfile1', 'foo bar');
+      }).then(function(){
+        return writeFile('dir-remfile2', 'baz buz');
+      }).then(done, done);
     });
   });
 
@@ -101,15 +94,15 @@ describe('Manipulating directories', function () {
     var dirName = 'dir-remme';
 
     beforeEach(function (done) {
-      mkdir(dirName, done);
+      mkdir(dirName).then(done, done);
     });
 
     it('Should call the callback.', function () {
-      rmdir(dirName, assert.bind(null, true));
+      rmdir(dirName).then(assert.bind(null, true));
     });
 
     it('Should return an empty array for the files', function (done) {
-      readdir(dirName, function (err, files) {
+      readdir(dirName).then(function(files){
         done(assert(!files.length));
       });
     });
