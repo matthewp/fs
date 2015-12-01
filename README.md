@@ -23,7 +23,7 @@ let input = document.querySelector('input[type="file"]');
 input.addEventListener('change', function(e) {
   let file = this.files[0]; // file is a File object.
 
-  writeFile(file.name, file, function() {
+  writeFile(file.name, file).then(function() {
     // All done! File has been saved.
   });
 });
@@ -34,46 +34,50 @@ Writing and reading.
 ```js
 import * as fs from 'fs-web';
 
-fs.writeFile('foo/some-file.txt', 'foo', function(){
-  fs.readdir('foo', function(err, files){
+fs.writeFile('foo/some-file.txt', 'foo')
+  .then(function(){
+    return fs.readdir('foo');
+  })
+  .then(function(files){
     files // -> [ {some-file.txt} ]
   });
-});
 ```
 
 ## API
 
-### fs.writeFile(fileName, data, callback)
+All methods return a Promise.
 
-Saves the file ``data`` with the name ``fileName`` and calls the ``callback``. If an error is encountered, the first parameter the callback receives will be an ``Error`` object.
+### fs.writeFile(fileName, data)
 
-### fs.readFile(fileName, callback)
+Saves the file ``data`` with the name ``fileName`` and returns a Promise. If an error is encountered, the Promise will be rejected with an ``Error`` object.
 
-Retrieves the file with the name ``fileName`` and calls the ``callback``. The first parameter of the callback is an ``Error`` object or null, the second parameter is the file's data as an ``ArrayBuffer``.
+### fs.readFile(fileName)
 
-### fs.readString(fileName, callback)
+Retrieves the file with the name ``fileName`` and returns a Promise. The Promise will resolve with the file's data as an ``ArrayBuffer``.
 
-Retrieves the file with the name ``fileName`` and calls the `callback`. The first parameter of the callback is an ``Error`` or null, the second parameter is a string.
+### fs.readString(fileName)
 
-### fs.removeFile(fileName, callback)
+Retrieves the file with the name ``fileName`` and returns a Promise. The Promise will resolve with a string representation of `fileName`.
 
-Removes the file with the name ``fileName`` from storage and calls the ``callback``. The callback is called even if the file doesn't exist.
+### fs.removeFile(fileName)
 
-### fs.readdir(fullPath, callback)
+Removes the file with the name ``fileName`` from storage and returns a Promise. The Promise will resolve even if the fileName doesn't exist.
 
-Gets the contents of ``fullPath`` and calls the ``callback``. The callback will contain an array of ``DirectoryEntry`` objects (see below).
+### fs.readdir(fullPath)
 
-### fs.mkdir(fullPath, callback)
+Gets the contents of ``fullPath`` and returns a Promise. The Promise will resolve with an array of ``DirectoryEntry`` objects (see below).
 
-Creates a directory at ``fullPath`` and calls the ``callback``. The only parameter of the callback is an ``Error``, when applicable.
+### fs.mkdir(fullPath)
 
-### fs.rmdir(fullPath, callback)
+Creates a directory at ``fullPath`` and returns a Promise.
 
-Removes the directory at ``fullPath``, recursively removing any files/subdirectories contained within.
+### fs.rmdir(fullPath)
+
+Removes the directory at ``fullPath``, recursively removing any files/subdirectories contained within. Returns a Promise that will resolve when the fullPath is removed.
 
 ### DirectoryEntry
 
-A ``DirectoryEntry`` object is passed to the callback of ``fs.readdir`` and represents either a **file** or a **directory**. A DirectoryEntry instance contains these properties/methods:
+A ``DirectoryEntry`` object is resolved from ``fs.readdir`` and represents either a **file** or a **directory**. A DirectoryEntry instance contains these properties/methods:
 
 ### DirectoryEntry#path
 
@@ -91,9 +95,9 @@ The given directory that the file/directory sits in.
 
 The ``type`` of the entry, either **file** or **directory**.
 
-### DirectoryEntry#readFile(callback)
+### DirectoryEntry#readFile()
 
-A convenience method for calling ``readFile(fileName, callback)``. Throws a TypeError if the entry is not of ``type`` **file**.
+A convenience method for calling ``readFile(fileName)``. Throws a TypeError if the entry is not of ``type`` **file**.
 
 ## License
 
