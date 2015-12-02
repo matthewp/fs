@@ -1,6 +1,6 @@
 {
   "name": "fs-web",
-  "version": "0.8.1",
+  "version": "1.0.0",
   "description": "Node's fs, for the browser",
   "main": "dist/cjs/fs.js",
   "directories": {
