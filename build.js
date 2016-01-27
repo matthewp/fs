@@ -12,18 +12,18 @@ var denpm = function(name){
 stealExport({
   system: {
     config: __dirname + "/package.json!npm",
-    main: ["fs-web"]
+    main: ["fs-web", "fs-web/global"]
   },
   outputs: {
     "global": {
-      modules: ["fs-web"],
+      modules: ["fs-web/global"],
       ignore: false,
       dest: __dirname + "/dist/fs.js",
       transpile: "global",
       normalize: denpm
     },
     "global minified": {
-      modules: ["fs-web"],
+      modules: ["fs-web/global"],
       ignore: false,
       minify: true,
       dest: __dirname + "/dist/fs.min.js",
